@@ -11,6 +11,8 @@ import org.mozzartbet.hackathon.HandEvaluator;
 import org.mozzartbet.hackathon.HandValueType;
 import org.mozzartbet.hackathon.Player;
 import org.mozzartbet.hackathon.actions.Action;
+import org.mozzartbet.hackathon.actions.RaiseAction;
+import org.mozzartbet.hackathon.actions.BetAction;
 import org.mozzartbet.hackathon.bots.Bot;
 import org.mozzartbet.hackathon.util.PokerConstants;
 
@@ -69,6 +71,7 @@ public class B2CBot implements Bot {
 	boolean firstTime = true;
 	private Card[] otherCards;
 	
+	private Player me;
 	
 	@Override
 	public void joinedTable(int bigBlind) {
@@ -105,6 +108,7 @@ public class B2CBot implements Bot {
 
 	@Override
 	public void playerUpdated(Player player) {
+		if(this == player.getBot()) this.me = player;
 		if (player.getCards().length == PokerConstants.NO_OF_HOLE_CARDS) {
             this.cardsInHand = player.getCards();
         }
@@ -134,6 +138,10 @@ public class B2CBot implements Bot {
 	@Override
 	public Action act(int minBet, int currentBet, Set<Action> allowedActions, int currentAmount) {
 		Action action = null;
+		
+		int cash = me.getCash();
+		int raise = 0;
+		
 		// okreni();
 		if(isPreFlop()) {
 			if (allowedActions.size() == 1) {
@@ -165,7 +173,182 @@ public class B2CBot implements Bot {
 			cards.addAll(this.cardsOnTable);
 			HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
 			if(evaluator.getType() == HandValueType.ROYAL_FLUSH) {
-				
+				raise = 35;
+				if(allowedActions.contains(Action.RAISE)){
+					action =  new RaiseAction(raise);
+				} else if(allowedActions.contains(Action.BET)){
+					action = new BetAction(raise);
+				} else if(allowedActions.contains(Action.CALL)){
+					action = Action.CALL;
+				} else if(allowedActions.contains(Action.CHECK)){
+					action = Action.CHECK;
+				}
+			} else if (evaluator.getType() == HandValueType.STRAIGHT_FLUSH) {
+				raise = 35;
+				if(allowedActions.contains(Action.RAISE)){
+					
+					action =  new RaiseAction(raise);
+				} else if(allowedActions.contains(Action.BET)){
+					action = new BetAction(raise);
+				} else if(allowedActions.contains(Action.CALL)){
+					action = Action.CALL;
+				} else if(allowedActions.contains(Action.CHECK)){
+					action = Action.CHECK;
+				}
+			} else if (evaluator.getType() == HandValueType.FOUR_OF_A_KIND) {
+				raise = 35;
+				if(allowedActions.contains(Action.RAISE)){
+					
+					action =  new RaiseAction(raise);
+				} else if(allowedActions.contains(Action.BET)){
+					action = new BetAction(raise);
+				} else if(allowedActions.contains(Action.CALL)){
+					action = Action.CALL;
+				} else if(allowedActions.contains(Action.CHECK)){
+					action = Action.CHECK;
+				}
+			} else if (evaluator.getType() == HandValueType.FULL_HOUSE) {
+				raise = 20;
+				if(allowedActions.contains(Action.RAISE)){
+					
+					action =  new RaiseAction(raise);
+				} else if(allowedActions.contains(Action.CALL)){
+					action = Action.CALL;
+				} else if(allowedActions.contains(Action.CHECK)){
+					action = Action.CHECK;
+				}
+			} else if (evaluator.getType() == HandValueType.FLUSH) {
+				raise = 20;
+				if(allowedActions.contains(Action.RAISE)){
+					
+					action =  new RaiseAction(raise);
+				} else if(allowedActions.contains(Action.CALL)){
+					action = Action.CALL;
+				} else if(allowedActions.contains(Action.CHECK)){
+					action = Action.CHECK;
+				}
+			} else if (evaluator.getType() == HandValueType.STRAIGHT) {
+				raise = 20;
+				if(allowedActions.contains(Action.RAISE)){
+					
+					action =  new RaiseAction(raise);
+				} else if(allowedActions.contains(Action.CALL)){
+					action = Action.CALL;
+				} else if(allowedActions.contains(Action.CHECK)){
+					action = Action.CHECK;
+				}
+			} else if (evaluator.getType() == HandValueType.THREE_OF_A_KIND) {
+				raise =  15;
+				if(cardsInHand[0].getRank() == cardsInHand[1].getRank()){
+					if(allowedActions.contains(Action.RAISE)){
+						
+						action =  new RaiseAction(raise);
+					} else if(allowedActions.contains(Action.CALL)){
+						action = Action.CALL;
+					} else if(allowedActions.contains(Action.CHECK)){
+						action = Action.CHECK;
+					}
+				} else {
+					if(allowedActions.contains(Action.CHECK))
+						action = Action.CHECK;
+					else if(allowedActions.contains(Action.CALL)){
+						if(minBet < 20)
+							action = Action.CALL;
+							
+						} else{
+							if(allowedActions.contains(Action.FOLD)) {
+								action = Action.FOLD;
+							}
+						}
+				}
+			} else if (evaluator.getType() == HandValueType.TWO_PAIRS) {
+				raise =  10;
+				if((cardsOnTable.get(0).getRank() != cardsOnTable.get(1).getRank())  && (cardsOnTable.get(0).getRank() != cardsOnTable.get(2).getRank()) && (cardsOnTable.get(2).getRank() != cardsOnTable.get(1).getRank())){
+					
+					if(allowedActions.contains(Action.RAISE)){
+						action =  new RaiseAction(raise);
+					} else if(allowedActions.contains(Action.CALL)){
+						action = Action.CALL;
+					} else if(allowedActions.contains(Action.CHECK)){
+						action = Action.CHECK;
+					}
+				} else {
+					if(allowedActions.contains(Action.CHECK))
+						action = Action.CHECK;
+					else if(allowedActions.contains(Action.CALL)){
+						if(minBet < 15)
+							action = Action.CALL;
+							
+					} else{
+						if(allowedActions.contains(Action.FOLD)) {
+							action = Action.FOLD;
+						}
+					}
+				}
+			} else if (evaluator.getType() == HandValueType.ONE_PAIR) {
+				raise = 10;
+				if((cardsOnTable.get(0).getRank() != cardsOnTable.get(1).getRank())  && (cardsOnTable.get(0).getRank() != cardsOnTable.get(2).getRank()) && (cardsOnTable.get(2).getRank() != cardsOnTable.get(1).getRank())){
+					if(allowedActions.contains(Action.RAISE)){
+						action =  new RaiseAction(raise);
+					} else if(allowedActions.contains(Action.CALL)){
+						action = Action.CALL;
+					} else if(allowedActions.contains(Action.CHECK)){
+						action = Action.CHECK;
+					}
+				} else {
+					if(allowedActions.contains(Action.CHECK))
+						action = Action.CHECK;
+					else if(allowedActions.contains(Action.CALL)){
+						if(minBet < 10)
+							action = Action.CALL;
+							
+					} else{
+						if(allowedActions.contains(Action.FOLD)) {
+							action = Action.FOLD;
+						}
+					}
+				}
+			} else { //SIGURNO HIGHCARD
+				if (allowedActions.contains(Action.CHECK)) {
+					action = Action.CHECK;
+				} else {
+					action = Action.FOLD;
+				}
+			}
+			//NEMAMO NISTA JAKO TRENUTNO -> GLEDAMO VRV DA DOBIJEMO NEKU JAKU KOMB.
+			
+			List<Integer> ourRoyalList = royalFlushPossibilityPlusOneCard();
+			List<Integer> ourStraightFlushList = straightFlushPossibilityPlusOneCard();
+			List<Integer> ourFourOfAKindList = fourOfAKindPossibilityPlusOneCard();
+			List<Integer> ourFullHouseList = fullHousePossibilityPlusOneCard();
+			List<Integer> ourFlushList = flushPossibilityPlusOneCard();
+			List<Integer> ourStraightList = straightPossibilityPlusOneCard();
+			List<Integer> ourThreeOfAKindList = threeOfAKindPossibilityPlusOneCard();
+			List<Integer> ourTwoPairsList = twoPairsPossibilityPlusOneCard();
+			List<Integer> ourOnePairList = onePairPossibilityPlusOneCard();
+			
+			
+			
+			
+			
+			
+		} else if(isTurn()){
+			
+			List<Card> cards = new ArrayList<Card>();
+			cards.add(this.cardsInHand[0]);
+			cards.add(this.cardsInHand[1]);
+			cards.addAll(this.cardsOnTable);
+			HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+			if(evaluator.getType() == HandValueType.ROYAL_FLUSH) {
+				raise = 35;
+				if(allowedActions.contains(Action.RAISE)){
+					
+					action =  new RaiseAction(raise);
+				} else if(allowedActions.contains(Action.CALL)){
+					action = Action.CALL;
+				} else if(allowedActions.contains(Action.CHECK)){
+					action = Action.CHECK;
+				}
 			} else if (evaluator.getType() == HandValueType.STRAIGHT_FLUSH) {
 				
 			} else if (evaluator.getType() == HandValueType.FOUR_OF_A_KIND) {
@@ -182,18 +365,40 @@ public class B2CBot implements Bot {
 				
 			} else if (evaluator.getType() == HandValueType.ONE_PAIR) {
 				
-			} else if (evaluator.getType() == HandValueType.HIGH_CARD) {
-				
+			} else { //SIGURNO HIGHCARD
+				if (allowedActions.contains(Action.CHECK)) {
+					action = Action.CHECK;
+				} else {
+					action = Action.FOLD;
+				}
 			}
+			//NEMAMO NISTA JAKO TRENUTNO -> GLEDAMO VRV DA DOBIJEMO NEKU JAKU KOMB.
+			
+			List<Integer> ourRoyalList = royalFlushPossibilityPlusOneCard();
+			List<Integer> ourStraightFlushList = straightFlushPossibilityPlusOneCard();
+			List<Integer> ourFourOfAKindList = fourOfAKindPossibilityPlusOneCard();
+			List<Integer> ourFullHouseList = fullHousePossibilityPlusOneCard();
+			List<Integer> ourFlushList = flushPossibilityPlusOneCard();
+			List<Integer> ourStraightList = straightPossibilityPlusOneCard();
+			List<Integer> ourThreeOfAKindList = threeOfAKindPossibilityPlusOneCard();
+			List<Integer> ourTwoPairsList = twoPairsPossibilityPlusOneCard();
+			List<Integer> ourOnePairList = onePairPossibilityPlusOneCard();
+			
+			
+			
+			
+			
+			
 		} else {
-			//////////////// samo za sad
+			////////////////samo za sad
 			if (allowedActions.contains(Action.CHECK)) {
 				return Action.CHECK;
 			} else {
 				return Action.CALL;
 			}
-			/////////////////
+		/////////////////
 		}
+		
 		return action;
 	}
 
@@ -657,9 +862,9 @@ public class B2CBot implements Bot {
 	/////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////
 	
-	private int royalFlushPossibilityPlusOneCard(){
+	private List<Integer> royalFlushPossibilityPlusOneCard(){
+		List<Integer> list = new ArrayList<Integer>();
 		Deck deck = new Deck();
-		int cnt = 0;
 		
         for(int i = 0; i < 52; i++){
         	List<Card> cards = new ArrayList<Card>();
@@ -679,18 +884,18 @@ public class B2CBot implements Bot {
         	if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
         	
         	if(evaluator.getType() == HandValueType.ROYAL_FLUSH && have == false){
-        		cnt++;
+        		list.add(evaluator.getValue());
         		
         	}
         }
         
-        return cnt;
+        return list;
 		
 	}
 	
-	private int straightFlushPossibilityPlusOneCard(){
+	private List<Integer> straightFlushPossibilityPlusOneCard(){
 		Deck deck = new Deck();
-		int cnt = 0;
+		List<Integer> list = new ArrayList<Integer>();
 		
         for(int i = 0; i < 52; i++){
         	List<Card> cards = new ArrayList<Card>();
@@ -710,18 +915,18 @@ public class B2CBot implements Bot {
         	if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
         	
         	if(evaluator.getType() == HandValueType.STRAIGHT_FLUSH && have == false){
-        		cnt++;
+        		list.add(evaluator.getValue());
         		
         	}
         }
         
-        return cnt;
+        return list;
 		
 	}
   
-	private int fourOfAKindPossibilityPlusOneCard(){
+	private List<Integer> fourOfAKindPossibilityPlusOneCard(){
 		Deck deck = new Deck();
-		int cnt = 0;
+		List<Integer> list = new ArrayList<Integer>();
 		
         for(int i = 0; i < 52; i++){
         	List<Card> cards = new ArrayList<Card>();
@@ -741,17 +946,18 @@ public class B2CBot implements Bot {
         	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
         	
         	if(evaluator.getType() == HandValueType.FOUR_OF_A_KIND && have == false){
-        		cnt++;
+        		list.add(evaluator.getValue());
+
         		
         	}
         }
-        return cnt;
+        return list;
 		
 	}
 	
-	private int fullHousePossibilityPlusOneCard(){
+	private List<Integer> fullHousePossibilityPlusOneCard(){
 		Deck deck = new Deck();
-		int cnt = 0;
+		List<Integer> list = new ArrayList<Integer>();
 		
         for(int i = 0; i < 52; i++){
         	List<Card> cards = new ArrayList<Card>();
@@ -771,17 +977,17 @@ public class B2CBot implements Bot {
         	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
         	
         	if(evaluator.getType() == HandValueType.FULL_HOUSE && have == false){
-        		cnt++;
+        		list.add(evaluator.getValue());
         		
         	}
         }
-        return cnt;
+        return list;
 		
 	}
 	
-	private int flushPossibilityPlusOneCard(){
+	private List<Integer> flushPossibilityPlusOneCard(){
 		Deck deck = new Deck();
-		int cnt = 0;
+		List<Integer> list = new ArrayList<Integer>();
 		
         for(int i = 0; i < 52; i++){
         	List<Card> cards = new ArrayList<Card>();
@@ -801,17 +1007,17 @@ public class B2CBot implements Bot {
         	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
         	
         	if(evaluator.getType() == HandValueType.FLUSH && have == false){
-        		cnt++;
+        		list.add(evaluator.getValue());
         		
         	}
         }
-        return cnt;
+        return list;
 		
 	}
 	
-	private int straightPossibilityPlusOneCard(){
+	private List<Integer> straightPossibilityPlusOneCard(){
 		Deck deck = new Deck();
-		int cnt = 0;
+		List<Integer> list = new ArrayList<Integer>();
 		
         for(int i = 0; i < 52; i++){
         	List<Card> cards = new ArrayList<Card>();
@@ -831,17 +1037,16 @@ public class B2CBot implements Bot {
         	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
         	
         	if(evaluator.getType() == HandValueType.STRAIGHT && have == false){
-        		cnt++;
-        		
+        		list.add(evaluator.getValue());        		
         	}
         }
-        return cnt;
+        return list;
 		
 	}
 
-	private int threeOfAKindPossibilityPlusOneCard(){
+	private List<Integer> threeOfAKindPossibilityPlusOneCard(){
 		Deck deck = new Deck();
-		int cnt = 0;
+		List<Integer> list = new ArrayList<Integer>();
 		
         for(int i = 0; i < 52; i++){
         	List<Card> cards = new ArrayList<Card>();
@@ -861,18 +1066,18 @@ public class B2CBot implements Bot {
         	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
         	
         	if(evaluator.getType() == HandValueType.THREE_OF_A_KIND && have == false){
-        		cnt++;
+        		list.add(evaluator.getValue());
         		
         	}
         }
-        return cnt;
+        return list;
 		
 	}
   
-	private int twoPairsPossibilityPlusOneCard(){
+	private List<Integer> twoPairsPossibilityPlusOneCard(){
 		Deck deck = new Deck();
-		int cnt = 0;
-		
+		List<Integer> list = new ArrayList<Integer>();
+
         for(int i = 0; i < 52; i++){
         	List<Card> cards = new ArrayList<Card>();
         	cards.add(this.cardsInHand[0]);
@@ -891,17 +1096,16 @@ public class B2CBot implements Bot {
         	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
         	
         	if(evaluator.getType() == HandValueType.TWO_PAIRS && have == false){
-        		cnt++;
-        		
+        		list.add(evaluator.getValue());
         	}
         }
-        return cnt;
+        return list;
 		
 	}
 
-	private int onePairPossibilityPlusOneCard(){
+	private List<Integer> onePairPossibilityPlusOneCard(){
 		Deck deck = new Deck();
-		int cnt = 0;
+		List<Integer> list = new ArrayList<Integer>();
 		
         for(int i = 0; i < 52; i++){
         	List<Card> cards = new ArrayList<Card>();
@@ -921,11 +1125,11 @@ public class B2CBot implements Bot {
         //	if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
         	
         	if(evaluator.getType() == HandValueType.ONE_PAIR && have == false){
-        		cnt++;
+        		list.add(evaluator.getValue());
         		
         	}
         }
-        return cnt;
+        return list;
 		
 	}
 
