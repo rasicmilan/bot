@@ -1,6 +1,5 @@
 package org.mozzartbet.hackathon.bots.borntocode;
-//KOMENTAR PROBAFEAMOFMAEOFMAEOFMAEMFOA
-//aihfeiojfaeijfieaf
+//nova sansa
 import java.util.List;
 import java.util.Set;
 
