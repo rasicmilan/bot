@@ -12,6 +12,7 @@ public class B2CBot implements Bot {
 //
 	//david miric
 	// sad nece raditri
+	// rasic
 	@Override
 	public void joinedTable(int bigBlind) {
 		// TODO Auto-generated method stub
