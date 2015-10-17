@@ -1,9 +1,5 @@
-
-public class B2CBot {
-
-}
 package org.mozzartbet.hackathon.bots.borntocode;
-
+//KOMENTAR PROBAFEAMOFMAEOFMAEOFMAEMFOA
 import java.util.List;
 import java.util.Set;
 
