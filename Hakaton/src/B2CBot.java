@@ -79,7 +79,7 @@ public class B2CBot implements Bot {
 	public void handStarted(Player dealer) {
 		cardsInHand = null;
 		myBet = 0;
-		
+		/*
 		if(!firstTime) {
 			if(dealer.getBot() != this) {
 				ima = dealer.getCash();
@@ -90,14 +90,17 @@ public class B2CBot implements Bot {
 		} else {
 			firstTime = false;
 		}
+		*/
 	}
 
 	@Override
 	public void actorRotated(Player actor) {
 		// TODO Auto-generated method stub
+		/*
 		otherCards = actor.getCards();
 		if(otherCards.length > 0)
 			System.out.println(actor.toString() + ": " + Card.RANK_SYMBOLS[otherCards[0].getRank()] + Card.SUIT_SYMBOLS[otherCards[0].getSuit()] + ", " + Card.RANK_SYMBOLS[otherCards[1].getRank()] + Card.SUIT_SYMBOLS[otherCards[1].getSuit()]);
+		*/
 	}
 
 	@Override
@@ -105,11 +108,13 @@ public class B2CBot implements Bot {
 		if (player.getCards().length == PokerConstants.NO_OF_HOLE_CARDS) {
             this.cardsInHand = player.getCards();
         }
+		/*
 		pla = player;
 		if(newHand) {
 			pla.win(dodaj);
 			newHand = false;
 		}
+		*/
 	}
 
 	@Override
@@ -153,6 +158,33 @@ public class B2CBot implements Bot {
 					}
 				}
 			}
+		} else if (isFlop()) {
+			List<Card> cards = new ArrayList<Card>();
+			cards.add(this.cardsInHand[0]);
+			cards.add(this.cardsInHand[1]);
+			cards.addAll(this.cardsOnTable);
+			HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+			if(evaluator.getType() == HandValueType.ROYAL_FLUSH) {
+				
+			} else if (evaluator.getType() == HandValueType.STRAIGHT_FLUSH) {
+				
+			} else if (evaluator.getType() == HandValueType.FOUR_OF_A_KIND) {
+				
+			} else if (evaluator.getType() == HandValueType.FULL_HOUSE) {
+				
+			} else if (evaluator.getType() == HandValueType.FLUSH) {
+				
+			} else if (evaluator.getType() == HandValueType.STRAIGHT) {
+				
+			} else if (evaluator.getType() == HandValueType.THREE_OF_A_KIND) {
+				
+			} else if (evaluator.getType() == HandValueType.TWO_PAIRS) {
+				
+			} else if (evaluator.getType() == HandValueType.ONE_PAIR) {
+				
+			} else if (evaluator.getType() == HandValueType.HIGH_CARD) {
+				
+			}
 		} else {
 			//////////////// samo za sad
 			if (allowedActions.contains(Action.CHECK)) {
@@ -174,585 +206,17 @@ public class B2CBot implements Bot {
 	///// added methods /////
 	/////////////////////////
 	
-	private int straightPossibilityPlusTwoCards(){
-		Deck deck1 = new Deck();
-		int cnt = 0;
-		
-		
-		for(int i=0; i<52; i++){
-			Card first = deck1.deal();
-
-            Deck deck2 = new Deck();
-            for(int j=0; j<52; j++){
-            	Card second = deck2.deal();
-            	List<Card> cards = new ArrayList<Card>();
-    			cards.add(this.cardsInHand[0]);
-                cards.add(this.cardsInHand[1]);
-                cards.addAll(this.cardsOnTable);
-                
-                
-                boolean have = false;
-            	
-            	for(Card c : cards){
-            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
-            	}
-            	if(first.compareTo(second) == 0) have = true;
-            	
-            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
-            		have = true;
-            	}
-              
-              cards.add(first);
-                cards.add(second);
-                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-            	
-            	if(evaluator.getType() == HandValueType.STRAIGHT && have == false){
-            		cnt++;
-            	}
-                
-            }
-            
-		}
-		return cnt;
-	}
-	
-	private int straightFlushPossibilityPlusTwoCards(){
-		Deck deck1 = new Deck();
-		int cnt = 0;
-		
-		
-		for(int i=0; i<52; i++){
-			Card first = deck1.deal();
-
-            Deck deck2 = new Deck();
-            for(int j=0; j<52; j++){
-            	Card second = deck2.deal();
-            	List<Card> cards = new ArrayList<Card>();
-    			cards.add(this.cardsInHand[0]);
-                cards.add(this.cardsInHand[1]);
-                cards.addAll(this.cardsOnTable);
-               
-                
-                boolean have = false;
-            	
-            	for(Card c : cards){
-            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
-            	}
-            	if(first.compareTo(second) == 0) have = true;
-            	
-            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
-            		have = true;
-            	}
-            	 cards.add(first);
-                cards.add(second);
-                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-            	if(evaluator.getType() == HandValueType.STRAIGHT_FLUSH && have == false){
-            		cnt++;
-            	}
-                
-            }
-            
-		}
-		return cnt;
-	}
-	
-	private int pokerFlushPossibilityPlusTwoCards(){
-		Deck deck1 = new Deck();
-		int cnt = 0;
-		
-		
-		for(int i=0; i<52; i++){
-			Card first = deck1.deal();
-
-            Deck deck2 = new Deck();
-            for(int j=0; j<52; j++){
-            	Card second = deck2.deal();
-            	List<Card> cards = new ArrayList<Card>();
-    			cards.add(this.cardsInHand[0]);
-                cards.add(this.cardsInHand[1]);
-                cards.addAll(this.cardsOnTable);
-               
-                
-                boolean have = false;
-            	
-            	for(Card c : cards){
-            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
-            	}
-            	if(first.compareTo(second) == 0) have = true;
-            	
-            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
-            		have = true;
-            	}
-            	 cards.add(first);
-                cards.add(second);
-                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-            	if(evaluator.getType() == HandValueType.FOUR_OF_A_KIND && have == false){
-            		cnt++;
-            	}
-                
-            }
-            
-		}
-		return cnt;
-	}
-	
-	private int fullHouseFlushPossibilityPlusTwoCards(){
-		Deck deck1 = new Deck();
-		int cnt = 0;
-		
-		
-		for(int i=0; i<52; i++){
-			Card first = deck1.deal();
-
-            Deck deck2 = new Deck();
-            for(int j=0; j<52; j++){
-            	Card second = deck2.deal();
-            	List<Card> cards = new ArrayList<Card>();
-    			cards.add(this.cardsInHand[0]);
-                cards.add(this.cardsInHand[1]);
-                cards.addAll(this.cardsOnTable);
-               
-                boolean have = false;
-            	
-            	for(Card c : cards){
-            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
-            	}
-            	if(first.compareTo(second) == 0) have = true;
-            	
-            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
-            		have = true;
-            	}
-            	 cards.add(first);
-                cards.add(second);
-                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-                
-            	if(evaluator.getType() == HandValueType.FULL_HOUSE && have == false){
-            		cnt++;
-            	}
-                
-            }
-            
-		}
-		return cnt;
-	}
-	
-	private int flushFlushPossibilityPlusTwoCards(){
-		Deck deck1 = new Deck();
-		int cnt = 0;
-		
-		
-		for(int i=0; i<52; i++){
-			Card first = deck1.deal();
-
-            Deck deck2 = new Deck();
-            for(int j=0; j<52; j++){
-            	Card second = deck2.deal();
-            	List<Card> cards = new ArrayList<Card>();
-    			cards.add(this.cardsInHand[0]);
-                cards.add(this.cardsInHand[1]);
-                cards.addAll(this.cardsOnTable);
-               
-                
-                boolean have = false;
-            	
-            	for(Card c : cards){
-            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
-            	}
-            	if(first.compareTo(second) == 0) have = true;
-            	
-            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
-            		have = true;
-            	}
-            	 cards.add(first);
-                cards.add(second);
-                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-            	if(evaluator.getType() == HandValueType.FLUSH && have == false){
-            		cnt++;
-            	}
-                
-            }
-            
-		}
-		return cnt;
-	}
-	
-	private int threeOfAKindFlushPossibilityPlusTwoCards(){
-		Deck deck1 = new Deck();
-		int cnt = 0;
-		
-		
-		for(int i=0; i<52; i++){
-			Card first = deck1.deal();
-
-            Deck deck2 = new Deck();
-            for(int j=0; j<52; j++){
-            	Card second = deck2.deal();
-            	List<Card> cards = new ArrayList<Card>();
-    			cards.add(this.cardsInHand[0]);
-                cards.add(this.cardsInHand[1]);
-                cards.addAll(this.cardsOnTable);
-                
-                
-                boolean have = false;
-            	
-            	for(Card c : cards){
-            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
-            	}
-            	if(first.compareTo(second) == 0) have = true;
-            	
-            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
-            		have = true;
-            	}
-            	cards.add(first);
-                cards.add(second);
-                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-            	if(evaluator.getType() == HandValueType.THREE_OF_A_KIND && have == false){
-            		cnt++;
-            	}
-                
-            }
-            
-		}
-		return cnt;
-	}
-	
-	
-	private int twoPairsPossibilityPlusTwoCards(){
-		Deck deck1 = new Deck();
-		int cnt = 0;
-		
-		
-		for(int i=0; i<52; i++){
-			Card first = deck1.deal();
-
-            Deck deck2 = new Deck();
-            for(int j=0; j<52; j++){
-            	Card second = deck2.deal();
-            	List<Card> cards = new ArrayList<Card>();
-    			cards.add(this.cardsInHand[0]);
-                cards.add(this.cardsInHand[1]);
-                cards.addAll(this.cardsOnTable);
-               
-                
-                boolean have = false;
-            	
-            	for(Card c : cards){
-            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
-            	}
-            	if(first.compareTo(second) == 0) have = true;
-            	
-            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
-            		have = true;
-            	}
-            	 cards.add(first);
-                cards.add(second);
-                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-            	if(evaluator.getType() == HandValueType.TWO_PAIRS && have == false){
-            		cnt++;
-            	}
-                
-            }
-            
-		}
-		return cnt;
-	}
-	
-	
-	private int onePairFlushPossibilityPlusTwoCards(){
-		Deck deck1 = new Deck();
-		int cnt = 0;
-		
-		
-		for(int i=0; i<52; i++){
-			Card first = deck1.deal();
-
-            Deck deck2 = new Deck();
-            for(int j=0; j<52; j++){
-            	Card second = deck2.deal();
-            	List<Card> cards = new ArrayList<Card>();
-    			cards.add(this.cardsInHand[0]);
-                cards.add(this.cardsInHand[1]);
-                cards.addAll(this.cardsOnTable);
-                
-                boolean have = false;
-            	
-            	for(Card c : cards){
-            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
-            	}
-            	if(first.compareTo(second) == 0) have = true;
-            	
-            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
-            		have = true;
-            	}
-            	cards.add(first);
-                cards.add(second);
-                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-                
-            	if(evaluator.getType() == HandValueType.ONE_PAIR && have == false){
-            		cnt++;
-            	}
-                
-            }
-            
-		}
-		return cnt;
-	}
-	
-	private int straightPossibilityPlusOneCard(){
-		Deck deck = new Deck();
-		int cnt = 0;
-		
-        for(int i = 0; i < 52; i++){
-        	List<Card> cards = new ArrayList<Card>();
-        	cards.add(this.cardsInHand[0]);
-            cards.add(this.cardsInHand[1]);
-            cards.addAll(this.cardsOnTable);
-        	Card current = deck.deal();
-        	cards.add(current);
-        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-        	
-        	boolean have = false;
-        	
-        	for(Card c : cards){
-        		if(c.compareTo(current) == 0) have = true;
-        	}
-        	
-        	if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
-        	
-        	if(evaluator.getType() == HandValueType.STRAIGHT && have == false){
-        		cnt++;
-        		
-        	}
-        }
-        
-        return cnt;
-		
-	}
-  
-	private int straightFlushPossibilityPlusOneCard(){
-		Deck deck = new Deck();
-		int cnt = 0;
-		
-        for(int i = 0; i < 52; i++){
-        	List<Card> cards = new ArrayList<Card>();
-        	cards.add(this.cardsInHand[0]);
-            cards.add(this.cardsInHand[1]);
-            cards.addAll(this.cardsOnTable);
-        	Card current = deck.deal();
-        	cards.add(current);
-        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-        	
-        	boolean have = false;
-        	
-        	for(Card c : cards){
-        		if(c.compareTo(current) == 0) have = true;
-        	}
-        	
-        	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
-        	
-        	if(evaluator.getType() == HandValueType.STRAIGHT_FLUSH && have == false){
-        		cnt++;
-        		
-        	}
-        }
-        return cnt;
-		
-	}
-	//////////////////////////////////////////
-	
-	
-	private int pokerPossibilityPlusOneCard(){
-		Deck deck = new Deck();
-		int cnt = 0;
-		
-        for(int i = 0; i < 52; i++){
-        	List<Card> cards = new ArrayList<Card>();
-        	cards.add(this.cardsInHand[0]);
-            cards.add(this.cardsInHand[1]);
-            cards.addAll(this.cardsOnTable);
-        	Card current = deck.deal();
-        	cards.add(current);
-        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-        	
-        	boolean have = false;
-        	
-        	for(Card c : cards){
-        		if(c.compareTo(current) == 0) have = true;
-        	}
-        	
-        	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
-        	
-        	if(evaluator.getType() == HandValueType.FOUR_OF_A_KIND && have == false){
-        		cnt++;
-        		
-        	}
-        }
-        return cnt;
-		
-	}
-	//////////////////////////////////////////
-	
-	private int fullHousePossibilityPlusOneCard(){
-		Deck deck = new Deck();
-		int cnt = 0;
-		
-        for(int i = 0; i < 52; i++){
-        	List<Card> cards = new ArrayList<Card>();
-        	cards.add(this.cardsInHand[0]);
-            cards.add(this.cardsInHand[1]);
-            cards.addAll(this.cardsOnTable);
-        	Card current = deck.deal();
-        	cards.add(current);
-        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-        	
-        	boolean have = false;
-        	
-        	for(Card c : cards){
-        		if(c.compareTo(current) == 0) have = true;
-        	}
-        	
-        	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
-        	
-        	if(evaluator.getType() == HandValueType.FULL_HOUSE && have == false){
-        		cnt++;
-        		
-        	}
-        }
-        return cnt;
-		
-	}
-	//////////////////////////////////////////
-	
-	private int flushPossibilityPlusOneCard(){
-		Deck deck = new Deck();
-		int cnt = 0;
-		
-        for(int i = 0; i < 52; i++){
-        	List<Card> cards = new ArrayList<Card>();
-        	cards.add(this.cardsInHand[0]);
-            cards.add(this.cardsInHand[1]);
-            cards.addAll(this.cardsOnTable);
-        	Card current = deck.deal();
-        	cards.add(current);
-        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-        	
-        	boolean have = false;
-        	
-        	for(Card c : cards){
-        		if(c.compareTo(current) == 0) have = true;
-        	}
-        	
-        	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
-        	
-        	if(evaluator.getType() == HandValueType.FLUSH && have == false){
-        		cnt++;
-        		
-        	}
-        }
-        return cnt;
-		
-	}
-	//////////////////////////////////////////
-  
-  
-  
-	private int threeOfAKindPossibilityPlusOneCard(){
-		Deck deck = new Deck();
-		int cnt = 0;
-		
-        for(int i = 0; i < 52; i++){
-        	List<Card> cards = new ArrayList<Card>();
-        	cards.add(this.cardsInHand[0]);
-            cards.add(this.cardsInHand[1]);
-            cards.addAll(this.cardsOnTable);
-        	Card current = deck.deal();
-        	cards.add(current);
-        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-        	
-        	boolean have = false;
-        	
-        	for(Card c : cards){
-        		if(c.compareTo(current) == 0) have = true;
-        	}
-        	
-        	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
-        	
-        	if(evaluator.getType() == HandValueType.THREE_OF_A_KIND && have == false){
-        		cnt++;
-        		
-        	}
-        }
-        return cnt;
-		
-	}
-	//////////////////////////////////////////
-  
-  
-	private int twoPairsPossibilityPlusOneCard(){
-		Deck deck = new Deck();
-		int cnt = 0;
-		
-        for(int i = 0; i < 52; i++){
-        	List<Card> cards = new ArrayList<Card>();
-        	cards.add(this.cardsInHand[0]);
-            cards.add(this.cardsInHand[1]);
-            cards.addAll(this.cardsOnTable);
-        	Card current = deck.deal();
-        	cards.add(current);
-        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-        	
-        	boolean have = false;
-        	
-        	for(Card c : cards){
-        		if(c.compareTo(current) == 0) have = true;
-        	}
-        	
-        	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
-        	
-        	if(evaluator.getType() == HandValueType.TWO_PAIRS && have == false){
-        		cnt++;
-        		
-        	}
-        }
-        return cnt;
-		
-	}
-	//////////////////////////////////////////
-
-  
-	private int onePairPossibilityPlusOneCard(){
-		Deck deck = new Deck();
-		int cnt = 0;
-		
-        for(int i = 0; i < 52; i++){
-        	List<Card> cards = new ArrayList<Card>();
-        	cards.add(this.cardsInHand[0]);
-            cards.add(this.cardsInHand[1]);
-            cards.addAll(this.cardsOnTable);
-        	Card current = deck.deal();
-        	cards.add(current);
-        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
-        	
-        	boolean have = false;
-        	
-        	for(Card c : cards){
-        		if(c.compareTo(current) == 0) have = true;
-        	}
-        	
-        //	if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
-        	
-        	if(evaluator.getType() == HandValueType.ONE_PAIR && have == false){
-        		cnt++;
-        		
-        	}
-        }
-        return cnt;
-		
-	}
-	//////////////////////////////////////////
 	
 	private boolean isPreFlop() {
 		return this.cardsOnTable.size() == 0;
+	}
+	
+	private boolean isFlop() {
+		return this.cardsOnTable.size() == 3;
+	}
+	
+	private boolean isTurn() {
+		return this.cardsOnTable.size() == 4;
 	}
 	
 	private void okreni() {
@@ -822,6 +286,651 @@ public class B2CBot implements Bot {
 		// System.out.println(" rank1 = " + rank1 + "\n rank2 = " + rank2 + "\n res = " + res);
 		return res;
 	}
+	
+	/////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
+	
+	private int royalFlushPossibilityPlusTwoCards(){
+		Deck deck1 = new Deck();
+		int cnt = 0;
+		
+		
+		for(int i=0; i<52; i++){
+			Card first = deck1.deal();
+
+            Deck deck2 = new Deck();
+            for(int j=0; j<52; j++){
+            	Card second = deck2.deal();
+            	List<Card> cards = new ArrayList<Card>();
+    			cards.add(this.cardsInHand[0]);
+                cards.add(this.cardsInHand[1]);
+                cards.addAll(this.cardsOnTable);
+                
+                
+                boolean have = false;
+            	
+            	for(Card c : cards){
+            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
+            	}
+            	if(first.compareTo(second) == 0) have = true;
+            	
+            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
+            		have = true;
+            	}
+              
+              cards.add(first);
+                cards.add(second);
+                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+            	
+            	if(evaluator.getType() == HandValueType.ROYAL_FLUSH && have == false){
+            		cnt++;
+            	}
+                
+            }
+            
+		}
+		return cnt;
+	}
+	
+	private int straightFlushPossibilityPlusTwoCards(){
+		Deck deck1 = new Deck();
+		int cnt = 0;
+		
+		
+		for(int i=0; i<52; i++){
+			Card first = deck1.deal();
+
+            Deck deck2 = new Deck();
+            for(int j=0; j<52; j++){
+            	Card second = deck2.deal();
+            	List<Card> cards = new ArrayList<Card>();
+    			cards.add(this.cardsInHand[0]);
+                cards.add(this.cardsInHand[1]);
+                cards.addAll(this.cardsOnTable);
+                
+                
+                boolean have = false;
+            	
+            	for(Card c : cards){
+            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
+            	}
+            	if(first.compareTo(second) == 0) have = true;
+            	
+            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
+            		have = true;
+            	}
+              
+              cards.add(first);
+                cards.add(second);
+                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+            	
+            	if(evaluator.getType() == HandValueType.STRAIGHT_FLUSH && have == false){
+            		cnt++;
+            	}
+                
+            }
+            
+		}
+		return cnt;
+	}
+	
+	private int fourOfAKindPossibilityPlusTwoCards(){
+		Deck deck1 = new Deck();
+		int cnt = 0;
+		
+		
+		for(int i=0; i<52; i++){
+			Card first = deck1.deal();
+
+            Deck deck2 = new Deck();
+            for(int j=0; j<52; j++){
+            	Card second = deck2.deal();
+            	List<Card> cards = new ArrayList<Card>();
+    			cards.add(this.cardsInHand[0]);
+                cards.add(this.cardsInHand[1]);
+                cards.addAll(this.cardsOnTable);
+               
+                
+                boolean have = false;
+            	
+            	for(Card c : cards){
+            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
+            	}
+            	if(first.compareTo(second) == 0) have = true;
+            	
+            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
+            		have = true;
+            	}
+            	 cards.add(first);
+                cards.add(second);
+                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+            	if(evaluator.getType() == HandValueType.FOUR_OF_A_KIND && have == false){
+            		cnt++;
+            	}
+                
+            }
+            
+		}
+		return cnt;
+	}
+	
+	private int fullHousePossibilityPlusTwoCards(){
+		Deck deck1 = new Deck();
+		int cnt = 0;
+		
+		
+		for(int i=0; i<52; i++){
+			Card first = deck1.deal();
+
+            Deck deck2 = new Deck();
+            for(int j=0; j<52; j++){
+            	Card second = deck2.deal();
+            	List<Card> cards = new ArrayList<Card>();
+    			cards.add(this.cardsInHand[0]);
+                cards.add(this.cardsInHand[1]);
+                cards.addAll(this.cardsOnTable);
+               
+                
+                boolean have = false;
+            	
+            	for(Card c : cards){
+            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
+            	}
+            	if(first.compareTo(second) == 0) have = true;
+            	
+            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
+            		have = true;
+            	}
+            	 cards.add(first);
+                cards.add(second);
+                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+            	if(evaluator.getType() == HandValueType.FULL_HOUSE && have == false){
+            		cnt++;
+            	}
+                
+            }
+            
+		}
+		return cnt;
+	}
+	
+	private int flushPossibilityPlusTwoCards(){
+		Deck deck1 = new Deck();
+		int cnt = 0;
+		
+		
+		for(int i=0; i<52; i++){
+			Card first = deck1.deal();
+
+            Deck deck2 = new Deck();
+            for(int j=0; j<52; j++){
+            	Card second = deck2.deal();
+            	List<Card> cards = new ArrayList<Card>();
+    			cards.add(this.cardsInHand[0]);
+                cards.add(this.cardsInHand[1]);
+                cards.addAll(this.cardsOnTable);
+               
+                boolean have = false;
+            	
+            	for(Card c : cards){
+            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
+            	}
+            	if(first.compareTo(second) == 0) have = true;
+            	
+            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
+            		have = true;
+            	}
+            	 cards.add(first);
+                cards.add(second);
+                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+                
+            	if(evaluator.getType() == HandValueType.FLUSH && have == false){
+            		cnt++;
+            	}
+                
+            }
+            
+		}
+		return cnt;
+	}
+	
+	private int straightPossibilityPlusTwoCards(){
+		Deck deck1 = new Deck();
+		int cnt = 0;
+		
+		
+		for(int i=0; i<52; i++){
+			Card first = deck1.deal();
+
+            Deck deck2 = new Deck();
+            for(int j=0; j<52; j++){
+            	Card second = deck2.deal();
+            	List<Card> cards = new ArrayList<Card>();
+    			cards.add(this.cardsInHand[0]);
+                cards.add(this.cardsInHand[1]);
+                cards.addAll(this.cardsOnTable);
+               
+                
+                boolean have = false;
+            	
+            	for(Card c : cards){
+            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
+            	}
+            	if(first.compareTo(second) == 0) have = true;
+            	
+            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
+            		have = true;
+            	}
+            	 cards.add(first);
+                cards.add(second);
+                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+            	if(evaluator.getType() == HandValueType.STRAIGHT && have == false){
+            		cnt++;
+            	}
+                
+            }
+            
+		}
+		return cnt;
+	}
+	
+	private int threeOfAKindFlushPossibilityPlusTwoCards(){
+		Deck deck1 = new Deck();
+		int cnt = 0;
+		
+		
+		for(int i=0; i<52; i++){
+			Card first = deck1.deal();
+
+            Deck deck2 = new Deck();
+            for(int j=0; j<52; j++){
+            	Card second = deck2.deal();
+            	List<Card> cards = new ArrayList<Card>();
+    			cards.add(this.cardsInHand[0]);
+                cards.add(this.cardsInHand[1]);
+                cards.addAll(this.cardsOnTable);
+                
+                
+                boolean have = false;
+            	
+            	for(Card c : cards){
+            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
+            	}
+            	if(first.compareTo(second) == 0) have = true;
+            	
+            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
+            		have = true;
+            	}
+            	cards.add(first);
+                cards.add(second);
+                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+            	if(evaluator.getType() == HandValueType.THREE_OF_A_KIND && have == false){
+            		cnt++;
+            	}
+                
+            }
+            
+		}
+		return cnt;
+	}
+	
+	private int twoPairsPossibilityPlusTwoCards(){
+		Deck deck1 = new Deck();
+		int cnt = 0;
+		
+		
+		for(int i=0; i<52; i++){
+			Card first = deck1.deal();
+
+            Deck deck2 = new Deck();
+            for(int j=0; j<52; j++){
+            	Card second = deck2.deal();
+            	List<Card> cards = new ArrayList<Card>();
+    			cards.add(this.cardsInHand[0]);
+                cards.add(this.cardsInHand[1]);
+                cards.addAll(this.cardsOnTable);
+               
+                
+                boolean have = false;
+            	
+            	for(Card c : cards){
+            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
+            	}
+            	if(first.compareTo(second) == 0) have = true;
+            	
+            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
+            		have = true;
+            	}
+            	 cards.add(first);
+                cards.add(second);
+                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+            	if(evaluator.getType() == HandValueType.TWO_PAIRS && have == false){
+            		cnt++;
+            	}
+                
+            }
+            
+		}
+		return cnt;
+	}
+	
+	private int onePairFlushPossibilityPlusTwoCards(){
+		Deck deck1 = new Deck();
+		int cnt = 0;
+		
+		
+		for(int i=0; i<52; i++){
+			Card first = deck1.deal();
+
+            Deck deck2 = new Deck();
+            for(int j=0; j<52; j++){
+            	Card second = deck2.deal();
+            	List<Card> cards = new ArrayList<Card>();
+    			cards.add(this.cardsInHand[0]);
+                cards.add(this.cardsInHand[1]);
+                cards.addAll(this.cardsOnTable);
+                
+                boolean have = false;
+            	
+            	for(Card c : cards){
+            		if(c.compareTo(first) == 0 || c.compareTo(second) == 0) have = true;
+            	}
+            	if(first.compareTo(second) == 0) have = true;
+            	
+            	if(this.cardsInHand[0].compareTo(first) == 0 || this.cardsInHand[1].compareTo(second) == 0){
+            		have = true;
+            	}
+            	cards.add(first);
+                cards.add(second);
+                HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+                
+            	if(evaluator.getType() == HandValueType.ONE_PAIR && have == false){
+            		cnt++;
+            	}
+                
+            }
+            
+		}
+		return cnt;
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
+	
+	private int royalFlushPossibilityPlusOneCard(){
+		Deck deck = new Deck();
+		int cnt = 0;
+		
+        for(int i = 0; i < 52; i++){
+        	List<Card> cards = new ArrayList<Card>();
+        	cards.add(this.cardsInHand[0]);
+            cards.add(this.cardsInHand[1]);
+            cards.addAll(this.cardsOnTable);
+        	Card current = deck.deal();
+        	cards.add(current);
+        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+        	
+        	boolean have = false;
+        	
+        	for(Card c : cards){
+        		if(c.compareTo(current) == 0) have = true;
+        	}
+        	
+        	if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
+        	
+        	if(evaluator.getType() == HandValueType.ROYAL_FLUSH && have == false){
+        		cnt++;
+        		
+        	}
+        }
+        
+        return cnt;
+		
+	}
+	
+	private int straightFlushPossibilityPlusOneCard(){
+		Deck deck = new Deck();
+		int cnt = 0;
+		
+        for(int i = 0; i < 52; i++){
+        	List<Card> cards = new ArrayList<Card>();
+        	cards.add(this.cardsInHand[0]);
+            cards.add(this.cardsInHand[1]);
+            cards.addAll(this.cardsOnTable);
+        	Card current = deck.deal();
+        	cards.add(current);
+        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+        	
+        	boolean have = false;
+        	
+        	for(Card c : cards){
+        		if(c.compareTo(current) == 0) have = true;
+        	}
+        	
+        	if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
+        	
+        	if(evaluator.getType() == HandValueType.STRAIGHT_FLUSH && have == false){
+        		cnt++;
+        		
+        	}
+        }
+        
+        return cnt;
+		
+	}
+  
+	private int fourOfAKindPossibilityPlusOneCard(){
+		Deck deck = new Deck();
+		int cnt = 0;
+		
+        for(int i = 0; i < 52; i++){
+        	List<Card> cards = new ArrayList<Card>();
+        	cards.add(this.cardsInHand[0]);
+            cards.add(this.cardsInHand[1]);
+            cards.addAll(this.cardsOnTable);
+        	Card current = deck.deal();
+        	cards.add(current);
+        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+        	
+        	boolean have = false;
+        	
+        	for(Card c : cards){
+        		if(c.compareTo(current) == 0) have = true;
+        	}
+        	
+        	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
+        	
+        	if(evaluator.getType() == HandValueType.FOUR_OF_A_KIND && have == false){
+        		cnt++;
+        		
+        	}
+        }
+        return cnt;
+		
+	}
+	
+	private int fullHousePossibilityPlusOneCard(){
+		Deck deck = new Deck();
+		int cnt = 0;
+		
+        for(int i = 0; i < 52; i++){
+        	List<Card> cards = new ArrayList<Card>();
+        	cards.add(this.cardsInHand[0]);
+            cards.add(this.cardsInHand[1]);
+            cards.addAll(this.cardsOnTable);
+        	Card current = deck.deal();
+        	cards.add(current);
+        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+        	
+        	boolean have = false;
+        	
+        	for(Card c : cards){
+        		if(c.compareTo(current) == 0) have = true;
+        	}
+        	
+        	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
+        	
+        	if(evaluator.getType() == HandValueType.FULL_HOUSE && have == false){
+        		cnt++;
+        		
+        	}
+        }
+        return cnt;
+		
+	}
+	
+	private int flushPossibilityPlusOneCard(){
+		Deck deck = new Deck();
+		int cnt = 0;
+		
+        for(int i = 0; i < 52; i++){
+        	List<Card> cards = new ArrayList<Card>();
+        	cards.add(this.cardsInHand[0]);
+            cards.add(this.cardsInHand[1]);
+            cards.addAll(this.cardsOnTable);
+        	Card current = deck.deal();
+        	cards.add(current);
+        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+        	
+        	boolean have = false;
+        	
+        	for(Card c : cards){
+        		if(c.compareTo(current) == 0) have = true;
+        	}
+        	
+        	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
+        	
+        	if(evaluator.getType() == HandValueType.FLUSH && have == false){
+        		cnt++;
+        		
+        	}
+        }
+        return cnt;
+		
+	}
+	
+	private int straightPossibilityPlusOneCard(){
+		Deck deck = new Deck();
+		int cnt = 0;
+		
+        for(int i = 0; i < 52; i++){
+        	List<Card> cards = new ArrayList<Card>();
+        	cards.add(this.cardsInHand[0]);
+            cards.add(this.cardsInHand[1]);
+            cards.addAll(this.cardsOnTable);
+        	Card current = deck.deal();
+        	cards.add(current);
+        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+        	
+        	boolean have = false;
+        	
+        	for(Card c : cards){
+        		if(c.compareTo(current) == 0) have = true;
+        	}
+        	
+        	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
+        	
+        	if(evaluator.getType() == HandValueType.STRAIGHT && have == false){
+        		cnt++;
+        		
+        	}
+        }
+        return cnt;
+		
+	}
+
+	private int threeOfAKindPossibilityPlusOneCard(){
+		Deck deck = new Deck();
+		int cnt = 0;
+		
+        for(int i = 0; i < 52; i++){
+        	List<Card> cards = new ArrayList<Card>();
+        	cards.add(this.cardsInHand[0]);
+            cards.add(this.cardsInHand[1]);
+            cards.addAll(this.cardsOnTable);
+        	Card current = deck.deal();
+        	cards.add(current);
+        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+        	
+        	boolean have = false;
+        	
+        	for(Card c : cards){
+        		if(c.compareTo(current) == 0) have = true;
+        	}
+        	
+        	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
+        	
+        	if(evaluator.getType() == HandValueType.THREE_OF_A_KIND && have == false){
+        		cnt++;
+        		
+        	}
+        }
+        return cnt;
+		
+	}
+  
+	private int twoPairsPossibilityPlusOneCard(){
+		Deck deck = new Deck();
+		int cnt = 0;
+		
+        for(int i = 0; i < 52; i++){
+        	List<Card> cards = new ArrayList<Card>();
+        	cards.add(this.cardsInHand[0]);
+            cards.add(this.cardsInHand[1]);
+            cards.addAll(this.cardsOnTable);
+        	Card current = deck.deal();
+        	cards.add(current);
+        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+        	
+        	boolean have = false;
+        	
+        	for(Card c : cards){
+        		if(c.compareTo(current) == 0) have = true;
+        	}
+        	
+        	//if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
+        	
+        	if(evaluator.getType() == HandValueType.TWO_PAIRS && have == false){
+        		cnt++;
+        		
+        	}
+        }
+        return cnt;
+		
+	}
+
+	private int onePairPossibilityPlusOneCard(){
+		Deck deck = new Deck();
+		int cnt = 0;
+		
+        for(int i = 0; i < 52; i++){
+        	List<Card> cards = new ArrayList<Card>();
+        	cards.add(this.cardsInHand[0]);
+            cards.add(this.cardsInHand[1]);
+            cards.addAll(this.cardsOnTable);
+        	Card current = deck.deal();
+        	cards.add(current);
+        	HandEvaluator evaluator = new HandEvaluator(new Hand(cards));
+        	
+        	boolean have = false;
+        	
+        	for(Card c : cards){
+        		if(c.compareTo(current) == 0) have = true;
+        	}
+        	
+        //	if(this.cardsInHand[0].compareTo(current) == 0    || this.cardsInHand[1].compareTo(current) != 0) have = true;
+        	
+        	if(evaluator.getType() == HandValueType.ONE_PAIR && have == false){
+        		cnt++;
+        		
+        	}
+        }
+        return cnt;
+		
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
 	
 }
 
