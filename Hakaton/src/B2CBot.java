@@ -9,7 +9,9 @@ import org.mozzartbet.hackathon.actions.Action;
 import org.mozzartbet.hackathon.bots.Bot;
 
 public class B2CBot implements Bot {
-
+//
+	//david miric
+	// sad nece raditri
 	@Override
 	public void joinedTable(int bigBlind) {
 		// TODO Auto-generated method stub
